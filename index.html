@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدرّب بناء الثروة</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:wght@400;700&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dark: #8B6914;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --card: #161616;
+    --border: #2A2A2A;
+    --text: #E8E0D0;
+    --muted: #888;
+    --green: #2ECC71;
+    --red: #E74C3C;
+    --orange: #F39C12;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--black);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .header h1 {
+    font-family: 'Amiri', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--gold-dark));
+  }
+  .divider::after { background: linear-gradient(to right, transparent, var(--gold-dark)); }
+  .divider span {
+    color: var(--gold);
+    font-size: 18px;
+  }
+
+  /* Form */
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle at top right, rgba(201,168,76,0.06), transparent 70%);
+    pointer-events: none;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  input, select {
+    background: #0D0D0D;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    padding: 13px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    direction: rtl;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+
+  input::placeholder { color: #444; }
+
+  select option { background: var(--dark); }
+
+  .debt-toggle {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    min-width: 120px;
+    background: #0D0D0D;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .toggle-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.07);
+  }
+
+  .toggle-btn:hover:not(.active) { border-color: #444; color: var(--text); }
+
+  .debt-fields { display: none; margin-top: 16px; }
+  .debt-fields.visible { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 500px) { .debt-fields.visible { grid-template-columns: 1fr; } }
+
+  .btn-analyze {
+    width: 100%;
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+    color: var(--black);
+    border: none;
+    border-radius: 3px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .btn-analyze::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .btn-analyze:hover::before { transform: translateX(100%); }
+  .btn-analyze:hover { opacity: 0.92; }
+  .btn-analyze:active { transform: scale(0.99); }
+
+  /* Results */
+  #results {
+    display: none;
+    margin-top: 40px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Score Card */
+  .score-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.05), transparent 70%);
+    pointer-events: none;
+  }
+
+  .score-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .score-header h2 {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: var(--gold-light);
+  }
+
+  .score-badge {
+    font-size: 2.2rem;
+    font-weight: 900;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 2px solid;
+    line-height: 1;
+    min-width: 90px;
+    text-align: center;
+  }
+
+  .score-badge.excellent { color: var(--green); border-color: var(--green); background: rgba(46,204,113,0.06); }
+  .score-badge.good { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,0.06); }
+  .score-badge.fair { color: var(--orange); border-color: var(--orange); background: rgba(243,156,18,0.06); }
+  .score-badge.poor { color: var(--red); border-color: var(--red); background: rgba(231,76,60,0.06); }
+
+  .assessment-text {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #CCC;
+    border-right: 3px solid var(--gold-dark);
+    padding-right: 18px;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .stat {
+    background: #0D0D0D;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .stat-value.green { color: var(--green); }
+  .stat-value.gold { color: var(--gold); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.orange { color: var(--orange); }
+
+  /* Top Move */
+  .top-move {
+    background: linear-gradient(135deg, #1A1400 0%, #120F00 100%);
+    border: 1px solid var(--gold-dark);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .top-move::before {
+    content: '★';
+    position: absolute;
+    top: -20px; left: -10px;
+    font-size: 120px;
+    color: rgba(201,168,76,0.04);
+    line-height: 1;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background: var(--gold);
+  }
+
+  .top-move h3 {
+    font-family: 'Amiri', serif;
+    font-size: 1.6rem;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .top-move p {
+    font-size: 14px;
+    line-height: 1.85;
+    color: #CCC;
+  }
+
+  .impact-bar-wrap { margin-top: 20px; }
+  .impact-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .impact-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .impact-fill {
+    height: 100%;
+    background: linear-gradient(to left, var(--gold-light), var(--gold-dark));
+    border-radius: 3px;
+    transition: width 1s ease;
+    width: 0%;
+  }
+
+  /* 90 Day Plan */
+  .plan-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px;
+    margin-bottom: 20px;
+  }
+
+  .plan-card h2 {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: var(--gold-light);
+    margin-bottom: 24px;
+  }
+
+  .phase {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: #0D0D0D;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .phase-header:hover { background: #131313; }
+
+  .phase-number {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .phase-title {
+    font-weight: 700;
+    font-size: 15px;
+    flex: 1;
+  }
+
+  .phase-chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.3s;
+  }
+
+  .phase.open .phase-chevron { transform: rotate(180deg); }
+
+  .phase-body {
+    display: none;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .phase.open .phase-body { display: block; }
+
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #1A1A1A;
+  }
+
+  .action-item:last-child { border-bottom: none; }
+
+  .action-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .action-icon.high { background: rgba(231,76,60,0.12); color: var(--red); }
+  .action-icon.med { background: rgba(243,156,18,0.12); color: var(--orange); }
+  .action-icon.low { background: rgba(46,204,113,0.12); color: var(--green); }
+
+  .action-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .action-content p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .priority-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-top: 6px;
+  }
+
+  .priority-tag.high { background: rgba(231,76,60,0.15); color: var(--red); }
+  .priority-tag.med { background: rgba(243,156,18,0.15); color: var(--orange); }
+  .priority-tag.low { background: rgba(46,204,113,0.15); color: var(--green); }
+
+  /* Warning box */
+  .warning-box {
+    background: rgba(231,76,60,0.07);
+    border: 1px solid rgba(231,76,60,0.25);
+    border-radius: 3px;
+    padding: 18px 20px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #DDD;
+    line-height: 1.7;
+  }
+
+  .warning-box strong { color: var(--red); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-bottom: 30px;
+  }
+
+  .footer-disclaimer {
+    color: #333;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+
+  .footer-dua {
+    font-family: 'Amiri', serif;
+    font-size: 15px;
+    color: #6B5A2A;
+    line-height: 1.9;
+    max-width: 500px;
+    margin: 0 auto 14px;
+    padding: 14px 20px;
+    border-top: 1px solid #1E1700;
+    border-bottom: 1px solid #1E1700;
+  }
+
+  .footer-brand {
+    font-size: 12px;
+    color: #444;
+    letter-spacing: 1.5px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .footer-brand a {
+    color: var(--gold-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-brand a:hover { color: var(--gold); }
+
+  .footer-dot { color: #2A2A2A; }
+
+  /* Help Button */
+  .btn-help {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 24px;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    z-index: 100;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-help:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(201,168,76,0.5);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-box {
+    background: var(--card);
+    border: 1px solid var(--gold-dark);
+    border-radius: 6px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-header {
+    background: linear-gradient(135deg, #110E00, #1A1400);
+    border-bottom: 1px solid var(--gold-dark);
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'Amiri', serif;
+    font-size: 1.4rem;
+    color: var(--gold-light);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 3px;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text); background: var(--border); }
+
+  .modal-body {
+    padding: 28px;
+  }
+
+  .modal-section {
+    margin-bottom: 24px;
+  }
+
+  .modal-section:last-child { margin-bottom: 0; }
+
+  .modal-section h4 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .modal-section p, .modal-section li {
+    font-size: 14px;
+    color: #BBB;
+    line-height: 1.85;
+  }
+
+  .modal-section ol {
+    padding-right: 20px;
+  }
+
+  .modal-section li {
+    margin-bottom: 8px;
+  }
+
+  .modal-section li strong { color: var(--text); }
+
+  .modal-note {
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #999;
+    line-height: 1.7;
+    margin-top: 16px;
+  }
+
+  /* Loading spinner */
+  .loader {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Reset btn */
+  .btn-reset {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    padding: 10px 22px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.2s;
+    display: block;
+    margin-left: auto;
+  }
+  .btn-reset:hover { border-color: var(--gold-dark); color: var(--gold); }
+
+  .gold-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold-dark), var(--gold));
+    margin-bottom: 10px;
+  }
+
+  /* Help button */
+  .btn-help {
+    position: fixed;
+    bottom: 28px;
+    left: 28px;
+    z-index: 999;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(201,168,76,0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-help:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+  }
+
+  .btn-help .help-icon {
+    width: 22px;
+    height: 22px;
+    background: var(--black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--gold-dark);
+    border-radius: 6px;
+    max-width: 620px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    position: relative;
+  }
+
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .modal-header {
+    background: linear-gradient(135deg, #1A1400, #0D0D00);
+    border-bottom: 1px solid var(--gold-dark);
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .modal-header h2 {
+    font-family: 'Amiri', serif;
+    font-size: 1.3rem;
+    color: var(--gold-light);
+  }
+
+  .modal-close {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .modal-close:hover { border-color: var(--gold-dark); color: var(--gold); }
+
+  .modal-body { padding: 28px; }
+
+  .help-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+
+  .help-step:last-child { margin-bottom: 0; }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .step-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+
+  .step-content p {
+    font-size: 13px;
+    color: #AAA;
+    line-height: 1.7;
+  }
+
+  .help-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  .help-note {
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #BBB;
+    line-height: 1.7;
+    margin-top: 20px;
+  }
+
+  .help-note strong { color: var(--gold); }
+
+  /* Updated footer */
+  footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-bottom: 30px;
+  }
+
+  .footer-dua {
+    font-family: 'Amiri', serif;
+    font-size: 14px;
+    color: var(--gold-dark);
+    line-height: 1.9;
+    margin-bottom: 14px;
+    opacity: 0.85;
+  }
+
+  .footer-brand {
+    font-size: 12px;
+    color: #2A2A2A;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .footer-legal {
+    font-size: 11px;
+    color: #282828;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">مدرّب بناء الثروة</div>
+    <h1>حوّل وضعك المالي<br>في 90 يوم</h1>
+    <p>أدخل بياناتك واحصل على تقييم صريح وخطة عمل مرتّبة حسب الأثر</p>
+    <p style="margin-top: 12px; color: var(--gold-dark); font-size: 13px; letter-spacing: 1px;">تم بواسطة خالد بن عبدالله بن سلمان المجحم</p>
+  </div>
+
+  <div class="divider"><span>◆</span></div>
+
+  <!-- Input Form -->
+  <div class="form-card" id="formSection">
+    <button class="btn-analyze" onclick="analyze()">🔍 قيّمني وأعطني الخطة</button>
+    <div style="margin-bottom: 28px;"></div>
+    <div class="form-grid">
+
+      <div class="field">
+        <label>العمر</label>
+        <input type="number" id="age" placeholder="مثال: 28" min="18" max="65">
+      </div>
+
+      <div class="field">
+        <label>الدخل الشهري (ريال)</label>
+        <input type="number" id="income" placeholder="مثال: 12000" min="0">
+      </div>
+
+      <div class="field">
+        <label>المدخرات الحالية (ريال)</label>
+        <input type="number" id="savings" placeholder="مثال: 30000" min="0">
+      </div>
+
+      <div class="field">
+        <label>المصاريف الشهرية (ريال)</label>
+        <input type="number" id="expenses" placeholder="مثال: 8000" min="0">
+      </div>
+
+      <div class="field full">
+        <label>وضع الاستثمارات</label>
+        <select id="investments">
+          <option value="none">ما عندي استثمارات</option>
+          <option value="started">بدأت للتو (صغيرة جداً)</option>
+          <option value="moderate">متوسطة (بين 10,000 - 100,000)</option>
+          <option value="strong">قوية (أكثر من 100,000)</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>هل عندك ديون؟</label>
+        <div class="debt-toggle">
+          <button class="toggle-btn active" data-val="no" onclick="toggleDebt('no')">لا، خالي من الديون ✓</button>
+          <button class="toggle-btn" data-val="consumer" onclick="toggleDebt('consumer')">ديون استهلاكية (بطاقات، قروض)</button>
+          <button class="toggle-btn" data-val="mortgage" onclick="toggleDebt('mortgage')">قرض عقاري</button>
+          <button class="toggle-btn" data-val="both" onclick="toggleDebt('both')">كلاهما</button>
+        </div>
+        <div class="debt-fields" id="debtFields">
+          <div class="field">
+            <label>مبلغ الديون الاستهلاكية (ريال)</label>
+            <input type="number" id="consumerDebt" placeholder="مثال: 20000" min="0">
+          </div>
+          <div class="field">
+            <label>الدفعة الشهرية للديون (ريال)</label>
+            <input type="number" id="debtPayment" placeholder="مثال: 1500" min="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label>الهدف المالي الرئيسي</label>
+        <select id="goal">
+          <option value="emergency">بناء صندوق طوارئ</option>
+          <option value="debt_free">التخلص من الديون</option>
+          <option value="invest">البدء بالاستثمار</option>
+          <option value="house">شراء عقار / بيت</option>
+          <option value="wealth">بناء ثروة طويلة المدى</option>
+          <option value="retire_early">التقاعد المبكر</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    يتم تحليل وضعك المالي...
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <!-- Score -->
+    <div class="score-card">
+      <div class="score-header">
+        <div>
+          <div class="gold-line"></div>
+          <h2>📊 أين أنت واقف الآن؟</h2>
+        </div>
+        <div class="score-badge" id="scoreBadge"></div>
+      </div>
+      <p class="assessment-text" id="assessmentText"></p>
+      <div class="stats-row" id="statsRow"></div>
+    </div>
+
+    <!-- Top Move -->
+    <div class="top-move">
+      <div class="section-label">أعلى حركة بأعلى تأثير هذا الشهر</div>
+      <h3 id="topMoveTitle"></h3>
+      <p id="topMoveDesc"></p>
+      <div class="impact-bar-wrap">
+        <div class="impact-label">
+          <span>مستوى التأثير</span>
+          <span id="impactPct"></span>
+        </div>
+        <div class="impact-bar">
+          <div class="impact-fill" id="impactFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 90 Day Plan -->
+    <div class="plan-card">
+      <h2>🗓️ خطة 90 يوم — مرتّبة حسب الأثر</h2>
+      <div id="planContainer"></div>
+    </div>
+
+    <button class="btn-reset" onclick="reset()">↩ إعادة التقييم</button>
+  </div>
+
+  <!-- Help Button -->
+  <button class="btn-help" onclick="document.getElementById('helpModal').classList.add('open')" title="كيف تستخدم الموقع؟">شرح / فكرة الموقع</button>
+
+  <!-- Help Modal -->
+  <div class="modal-overlay" id="helpModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>💡 كيف تستخدم مدرّب بناء الثروة؟</h3>
+        <button class="modal-close" onclick="document.getElementById('helpModal').classList.remove('open')">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="modal-section">
+          <h4>🎯 فكرة الموقع</h4>
+          <p>هذه أداة تحليل مالي شخصي تعمل كمدرّب ثروة يقيّمك بصراحة. بعد إدخال بياناتك، تحصل فوراً على: تقييم حقيقي لوضعك، أعلى حركة مالية تأثيراً هذا الشهر، وخطة عمل 90 يوم مرتّبة حسب الأولوية.</p>
+        </div>
+
+        <div class="modal-section">
+          <h4>📝 طريقة الاستخدام</h4>
+          <ol>
+            <li><strong>أدخل عمرك ودخلك الشهري</strong> — هذان الحقلان أساسيان.</li>
+            <li><strong>أدخل مدخراتك ومصاريفك الشهرية</strong> — كلما كانت الأرقام دقيقة، كان التحليل أفضل.</li>
+            <li><strong>اختر وضع استثماراتك</strong> — من لا يوجد حتى قوية.</li>
+            <li><strong>حدّد وضع الديون</strong> — إذا عندك ديون، أدخل المبلغ والدفعة الشهرية.</li>
+            <li><strong>اختر هدفك المالي الرئيسي</strong> — سيبني عليه النظام توصياته.</li>
+            <li><strong>اضغط "قيّمني وأعطني الخطة"</strong> — وستظهر لك نتائجك خلال ثوانٍ.</li>
+          </ol>
+        </div>
+
+        <div class="modal-section">
+          <h4>📊 ماذا ستحصل عليه؟</h4>
+          <p>
+            ✅ <strong>درجة مالية</strong> (ممتاز / جيد / متوسط / حرج) مع شرح تفصيلي<br><br>
+            ✅ <strong>أرقام حيوية</strong>: فائضك الشهري، أشهر الطوارئ، معدل الادخار<br><br>
+            ✅ <strong>الحركة الأعلى تأثيراً</strong> هذا الشهر مع قياس الأثر المتوقع<br><br>
+            ✅ <strong>خطة 90 يوم</strong> مقسّمة لـ 3 مراحل بإجراءات عملية مرتّبة حسب الأولوية
+          </p>
+        </div>
+
+        <div class="modal-note">
+          ⚠️ هذه الأداة للتوعية المالية فقط وتعتمد على البيانات التي تدخلها. استشر متخصصاً مالياً معتمداً قبل اتخاذ أي قرار مالي كبير. بياناتك تبقى في جهازك ولا تُرسل لأي مكان.
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-disclaimer">هذه الأداة للتوعية المالية فقط — استشر متخصصاً مالياً معتمداً قبل أي قرار كبير</div>
+    <div class="footer-dua">
+      اللهم اجعل هذا العمل صدقة جارية عني وعن والداي أمي وأبي وأخي وزوجتي وذريتي
+    </div>
+    <div class="footer-brand">
+      <a href="https://myscent.net" target="_blank">myscent.net</a>
+      <span class="footer-dot">·</span>
+      <span>0576374905</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+let debtStatus = 'no';
+
+function toggleDebt(val) {
+  debtStatus = val;
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-val="${val}"]`).classList.add('active');
+  const fields = document.getElementById('debtFields');
+  fields.classList.toggle('visible', val !== 'no');
+}
+
+function fmt(n) {
+  return Number(n).toLocaleString('ar-SA') + ' ر.س';
+}
+
+function analyze() {
+  const age = parseInt(document.getElementById('age').value) || 0;
+  const income = parseFloat(document.getElementById('income').value) || 0;
+  const savings = parseFloat(document.getElementById('savings').value) || 0;
+  const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+  const investments = document.getElementById('investments').value;
+  const goal = document.getElementById('goal').value;
+  const consumerDebt = parseFloat(document.getElementById('consumerDebt').value) || 0;
+  const debtPayment = parseFloat(document.getElementById('debtPayment').value) || 0;
+
+  if (!age || !income) {
+    alert('رجاءً أدخل العمر والدخل على الأقل');
+    return;
+  }
+
+  // Show loader
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+
+  setTimeout(() => {
+    buildResults({ age, income, savings, expenses, investments, goal, consumerDebt, debtPayment });
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Animate impact bar
+    setTimeout(() => {
+      const fill = document.getElementById('impactFill');
+      fill.style.width = fill.dataset.pct + '%';
+    }, 300);
+
+    // Open first phase
+    document.querySelectorAll('.phase')[0]?.classList.add('open');
+  }, 1200);
+}
+
+function buildResults({ age, income, savings, expenses, investments, goal, consumerDebt, debtPayment }) {
+  const surplus = income - expenses - debtPayment;
+  const savingsRate = income > 0 ? ((savings / income) * 100) : 0;
+  const emergencyMonths = expenses > 0 ? (savings / expenses) : 0;
+  const debtToIncome = income > 0 ? (consumerDebt / income) : 0;
+  const yearsToRetire = 60 - age;
+
+  // --- SCORE ---
+  let score = 0;
+  if (surplus > 0) score += 20;
+  if (surplus > income * 0.2) score += 15;
+  if (emergencyMonths >= 3) score += 15;
+  if (emergencyMonths >= 6) score += 10;
+  if (consumerDebt === 0) score += 20;
+  if (consumerDebt > 0 && debtToIncome < 3) score += 10;
+  if (investments === 'moderate' || investments === 'strong') score += 15;
+  if (investments === 'started') score += 8;
+  if (age < 35) score += 5;
+
+  let scoreLabel, scoreClass;
+  if (score >= 75) { scoreLabel = 'ممتاز'; scoreClass = 'excellent'; }
+  else if (score >= 55) { scoreLabel = 'جيد'; scoreClass = 'good'; }
+  else if (score >= 35) { scoreLabel = 'متوسط'; scoreClass = 'fair'; }
+  else { scoreLabel = 'حرج'; scoreClass = 'poor'; }
+
+  document.getElementById('scoreBadge').textContent = scoreLabel;
+  document.getElementById('scoreBadge').className = 'score-badge ' + scoreClass;
+
+  // --- ASSESSMENT TEXT ---
+  let assessment = '';
+  if (surplus < 0) {
+    assessment = `⚠️ أنت تصرف أكثر مما تكسب بـ ${fmt(Math.abs(surplus))} شهرياً — هذا الوضع خطير ويجب معالجته فوراً. `;
+  } else if (surplus < income * 0.1) {
+    assessment = `وضعك ضيّق الحال — فائضك الشهري ${fmt(surplus)} فقط، وهذا يعطيك هامش خطأ صفري. `;
+  } else {
+    assessment = `فائضك الشهري ${fmt(surplus)} — هذا أساس جيد تبني عليه. `;
+  }
+
+  if (emergencyMonths < 1) assessment += `صندوق طوارئك شبه معدوم (${emergencyMonths.toFixed(1)} شهر فقط)، مما يعرّضك لمخاطر عالية. `;
+  else if (emergencyMonths < 3) assessment += `صندوق طوارئك ضعيف (${emergencyMonths.toFixed(1)} شهر)، يحتاج تعزيز. `;
+  else if (emergencyMonths >= 6) assessment += `صندوق طوارئك قوي (${emergencyMonths.toFixed(1)} شهر) ✓. `;
+
+  if (consumerDebt > 0) assessment += `الديون الاستهلاكية (${fmt(consumerDebt)}) تمثّل ${debtToIncome.toFixed(1)} ضعف دخلك الشهري — هذه الأولوية القصوى. `;
+  else assessment += `أنت خالٍ من الديون الاستهلاكية — هذه ميزة كبيرة جداً. `;
+
+  if (investments === 'none' && age > 28) assessment += `في عمرك، الوقت هو أقوى أدواتك الاستثمارية — كل سنة تأخير تكلّفك بالأرقام. `;
+  if (investments === 'strong') assessment += `وجود استثمارات قوية يضعك في مقدمة أقرانك. `;
+
+  document.getElementById('assessmentText').textContent = assessment;
+
+  // --- STATS ---
+  const statsData = [
+    { val: fmt(surplus), label: 'الفائض الشهري', cls: surplus > 0 ? 'green' : 'red' },
+    { val: emergencyMonths.toFixed(1) + ' أشهر', label: 'صندوق الطوارئ', cls: emergencyMonths >= 3 ? 'green' : emergencyMonths >= 1 ? 'orange' : 'red' },
+    { val: Math.round((surplus / income) * 100) + '%', label: 'معدل الادخار', cls: surplus / income >= 0.2 ? 'green' : surplus / income >= 0.1 ? 'orange' : 'red' },
+    { val: yearsToRetire + ' سنة', label: 'حتى سن 60', cls: 'gold' },
+  ];
+
+  document.getElementById('statsRow').innerHTML = statsData.map(s =>
+    `<div class="stat"><div class="stat-value ${s.cls}">${s.val}</div><div class="stat-label">${s.label}</div></div>`
+  ).join('');
+
+  // --- TOP MOVE ---
+  let topTitle, topDesc, impactPct;
+
+  if (surplus < 0) {
+    topTitle = 'اضرب المصاريف بالسكين هذا الأسبوع';
+    topDesc = `أنت في عجز شهري — لا توجد خطوة أهم من إيقاف النزيف فوراً. افتح كشف حسابك الآن، وضع كل مصروف أمامك، واسأل عن كل بند: "هل أحتاجه فعلاً؟" الهدف: إيجاد ${fmt(Math.abs(surplus) + income * 0.1)} في التخفيضات خلال 7 أيام.`;
+    impactPct = 98;
+  } else if (consumerDebt > income * 3) {
+    topTitle = 'حارب الديون الاستهلاكية بكل ما عندك';
+    topDesc = `ديونك الاستهلاكية تمثّل ${debtToIncome.toFixed(1)} ضعف دخلك — والفائدة عليها تأكل مستقبلك. خصص كل فائضك (${fmt(surplus)}) لسداد أعلى دين فائدة أولاً. هذه الاستراتيجية (Avalanche Method) توفّر لك آلاف الريالات.`;
+    impactPct = 95;
+  } else if (emergencyMonths < 3) {
+    topTitle = 'ابنِ صندوق طوارئ 3 أشهر أولاً';
+    topDesc = `بدون صندوق طوارئ، أي أزمة (مرض، طارئ، فقدان وظيفة) ستدفعك للديون. هدفك: ${fmt(expenses * 3)} كصندوق طوارئ. بفائضك الحالي ${fmt(surplus)}، ستصل لهذا الهدف خلال ${Math.ceil((expenses * 3 - savings) / surplus)} شهر.`;
+    impactPct = 90;
+  } else if (investments === 'none') {
+    topTitle = 'ابدأ الاستثمار الشهري المنتظم هذا الشهر';
+    topDesc = `صندوق طوارئك جيد وليس عندك ديون — حان وقت تشغيل مالك. ابدأ بـ ${fmt(surplus * 0.5)} شهرياً في صندوق مؤشر متنوع. بمعدل 8% سنوياً على مدى ${yearsToRetire} سنة، هذا المبلغ قد يصبح ${fmt(Math.round(surplus * 0.5 * 12 * (Math.pow(1.08, yearsToRetire) - 1) / 0.08))}.`;
+    impactPct = 88;
+  } else {
+    topTitle = 'ضاعف نسبة ادخارك إلى 30%';
+    topDesc = `وضعك جيد — الترقية التالية هي الزيادة من نسبة الادخار الحالية إلى 30%. هذا يعني استهداف ${fmt(income * 0.3)} شهرياً للادخار والاستثمار. راجع مصاريفك وحدّد أكبر 3 بنود قابلة للتخفيض.`;
+    impactPct = 85;
+  }
+
+  document.getElementById('topMoveTitle').textContent = topTitle;
+  document.getElementById('topMoveDesc').textContent = topDesc;
+  document.getElementById('impactPct').textContent = impactPct + '%';
+  document.getElementById('impactFill').dataset.pct = impactPct;
+  document.getElementById('impactFill').style.width = '0%';
+
+  // --- 90 DAY PLAN ---
+  const plan = build90DayPlan({ age, income, savings, expenses, investments, goal, consumerDebt, debtPayment, surplus, emergencyMonths });
+
+  document.getElementById('planContainer').innerHTML = plan.map((phase, i) => `
+    <div class="phase ${i === 0 ? 'open' : ''}" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <span class="phase-number">${phase.label}</span>
+        <span class="phase-title">${phase.title}</span>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        ${phase.actions.map(a => `
+          <div class="action-item">
+            <div class="action-icon ${a.priority}">
+              ${a.priority === 'high' ? '🔥' : a.priority === 'med' ? '⚡' : '✅'}
+            </div>
+            <div class="action-content">
+              <h4>${a.title}</h4>
+              <p>${a.desc}</p>
+              <span class="priority-tag ${a.priority}">
+                ${a.priority === 'high' ? 'أولوية عالية' : a.priority === 'med' ? 'أولوية متوسطة' : 'أولوية منخفضة'}
+              </span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function build90DayPlan({ age, income, savings, expenses, investments, goal, consumerDebt, debtPayment, surplus, emergencyMonths }) {
+  const targetEmergency = expenses * 3;
+  const needsEmergency = emergencyMonths < 3;
+  const hasDebt = consumerDebt > 0;
+  const needsInvestments = investments === 'none' || investments === 'started';
+
+  const phase1Actions = [];
+  const phase2Actions = [];
+  const phase3Actions = [];
+
+  // Phase 1: Days 1-30
+  if (surplus < 0) {
+    phase1Actions.push({ priority: 'high', title: 'ميزانية الطوارئ: قطع كل شيء غير ضروري', desc: `أنت في عجز — اسحب كشف الحساب الآن. صنّف المصاريف: ضرورة / رفاهية. اهدف لتوفير ${fmt(Math.abs(surplus) + 500)} هذا الشهر.` });
+    phase1Actions.push({ priority: 'high', title: 'ابحث عن دخل إضافي فوري', desc: 'فكر في استشارات، فريلانس، أو بيع أشياء غير مستخدمة. حتى ${fmt(1000)} إضافية تغير المعادلة.' });
+  } else {
+    if (needsEmergency) {
+      phase1Actions.push({ priority: 'high', title: `ابدأ صندوق طوارئ بـ ${fmt(Math.min(surplus * 0.7, targetEmergency - savings))} هذا الشهر`, desc: `افتح حساب ادخار منفصل خاص بالطوارئ. تحويل تلقائي في أول الشهر بمجرد نزول الراتب. لا تلمسه إلا للطوارئ الحقيقية.` });
+    }
+    if (hasDebt) {
+      phase1Actions.push({ priority: 'high', title: 'رتّب ديونك وابدأ استراتيجية Avalanche', desc: `اسرد كل ديونك مع نسبة الفائدة. ادفع الحد الأدنى على الكل، وضع كل فائض على أعلى دين فائدة. وفّر آلاف الريالات.` });
+    }
+    phase1Actions.push({ priority: 'med', title: 'راجع وفعّل الميزانية بـ 3 تصنيفات', desc: 'ضروريات (50%)، أهداف ادخار (20%)، رفاهيات (30%). سجّل كل ريال لمدة 30 يوم تتبعاً كاملاً.' });
+    phase1Actions.push({ priority: 'med', title: 'اسحب تقرير بياناتك المالية الكامل', desc: 'راجع كل الاشتراكات والتأمينات والخدمات. ألغِ كل ما لم تستخدمه 3 مرات في الشهر الماضي.' });
+  }
+
+  // Phase 2: Days 31-60
+  if (needsEmergency && !hasDebt) {
+    phase2Actions.push({ priority: 'high', title: 'أكمل بناء صندوق الطوارئ (3 أشهر)', desc: `الهدف: ${fmt(targetEmergency)}. إذا وصلت له في الشهر الأول، ابدأ هذا الشهر بتحويل 50% من الفائض للاستثمار.` });
+  }
+  if (hasDebt) {
+    phase2Actions.push({ priority: 'high', title: 'سرّع سداد الديون الاستهلاكية', desc: `ضع أي مبلغ إضافي — مكافأة، عمل إضافي، بيع — على سداد الديون. كل ${fmt(1000)} إضافية توفّر لك فائدة مركبة كبيرة.` });
+  }
+  if (needsInvestments) {
+    phase2Actions.push({ priority: 'med', title: 'افتح حساب استثمار وابدأ بصندوق مؤشر', desc: `ابدأ بـ ${fmt(Math.max(surplus * 0.3, 500))} شهرياً. صناديق المؤشرات المتنوعة (مثل S&P 500 أو صناديق الأسهم المحلية) هي نقطة انطلاق ممتازة.` });
+  }
+  phase2Actions.push({ priority: 'med', title: 'فكّر في تطوير مهاراتك لرفع الدخل', desc: `الاستثمار في مهارة قابلة للتسويق قد يرفع دخلك ${fmt(income * 0.2)} - ${fmt(income * 0.5)} سنوياً. حدد مهارة واحدة مطلوبة في مجالك.` });
+  phase2Actions.push({ priority: 'low', title: 'راجع التأمين والتغطيات', desc: 'تأكد أن عندك تأمين صحي كافٍ وتأمين على الدخل. هذا يحمي كل ما بنيته من الانهيار بسبب ظرف طارئ.' });
+
+  // Phase 3: Days 61-90
+  if (goal === 'wealth' || goal === 'retire_early') {
+    phase3Actions.push({ priority: 'high', title: 'ضاعف استثماراتك وتنوّعها', desc: `ارفع نسبة استثمارك إلى ${Math.min(30, Math.round((surplus / income) * 100 * 1.5))}% من الدخل. فكّر في توزيع المحفظة: 60% أسهم، 30% صكوك/سندات، 10% ذهب أو بدائل.` });
+  }
+  if (goal === 'house') {
+    phase3Actions.push({ priority: 'high', title: 'ابدأ خطة الدفعة الأولى للعقار', desc: `احسب الدفعة الأولى المطلوبة (عادة 20% من قيمة العقار). خصص ${fmt(surplus * 0.6)} شهرياً في حساب منفصل لهذا الهدف.` });
+  }
+  phase3Actions.push({ priority: 'med', title: 'راجع تقدّمك ووسّع مصادر دخلك', desc: 'قيّم كل رقم من الجدول الأصلي. إذا وصلت للأهداف، فكّر في دخل إضافي: استثمار عقاري، مشروع صغير، أو دخل سلبي.' });
+  phase3Actions.push({ priority: 'med', title: 'ضع هدفاً مالياً لـ 12 شهر القادمة', desc: `بناءً على ما حققته في 90 يوم، رسم خارطة طريق للسنة: كم تريد في الادخار؟ كم في الاستثمار؟ وما الهدف الكبير لـ 5 سنوات؟` });
+  phase3Actions.push({ priority: 'low', title: 'أتمت حياتك المالية', desc: 'اجعل الادخار والاستثمار تحويلاً تلقائياً في أول الشهر. ما لا تراه لا تصرفه. التلقائية هي أقوى أداة مالية.' });
+
+  return [
+    { label: 'اليوم 1–30', title: 'الأساس: تقييم وضبط المركز المالي', actions: phase1Actions },
+    { label: 'اليوم 31–60', title: 'البناء: تعزيز الحماية والبدء بالنمو', actions: phase2Actions },
+    { label: 'اليوم 61–90', title: 'الهجوم: التوسع نحو الهدف الكبير', actions: phase3Actions },
+  ];
+}
+
+function togglePhase(el) {
+  el.classList.toggle('open');
+}
+
+function reset() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('input').forEach(i => i.value = '');
+  document.getElementById('investments').value = 'none';
+  document.getElementById('goal').value = 'emergency';
+  toggleDebt('no');
+}
+</script>
+</body>
+</html>
